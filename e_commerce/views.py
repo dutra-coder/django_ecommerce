@@ -19,4 +19,7 @@ def contact_page(request) :
         "title": "Contact Page",
         "content": "Welcome to Contact page"
     }
+    if request.method == "POST":
+        print(request.POST)
+        
     return render(request, "contact/view.html",context)
