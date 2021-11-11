@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
+User = get_user_model()
 class ContactForm(forms.Form):
     name = forms.CharField(
         error_messages={'required':'Mandatory name insert.'},
@@ -30,12 +31,6 @@ class ContactForm(forms.Form):
         )
     )
 
-    def clean_email(self):
-       email = self.cleaned_data.get("email") 
-       if not "gmail.com" in email:
-           raise forms.ValidationError("Mail must be gmail.com")
-
-       return email
 
 class LoginForm(forms.Form):
     username = forms.CharField()
@@ -46,3 +41,19 @@ class RegisterForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput)
     password2 = forms.CharField(label="Confirm password", widget=forms.PasswordInput)
+
+def clean_username(self):
+       username = self.cleaned_data.get("username") 
+       qs = User.objects.filter(username=username)
+       if qs.exists():
+           raise forms.ValidationError("This username alreagy exist. Choose another")
+
+       return username
+
+def clean_email(self):
+       email = self.cleaned_data.get("email") 
+       qs = User.objects.filter(email=email)
+       if qs.exists():
+           raise forms.ValidationError("This email alreagy exist. Choose another")
+
+       return email
