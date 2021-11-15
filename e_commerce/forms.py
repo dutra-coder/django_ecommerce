@@ -31,6 +31,13 @@ class ContactForm(forms.Form):
         )
     )
 
+def clean_email(self):
+       email = self.cleaned_data.get("email") 
+       if not "gmail.com" in email:
+           raise forms.ValidationError("This email must be gmail.com")
+
+       return email
+
 
 class LoginForm(forms.Form):
     username = forms.CharField()
@@ -47,7 +54,6 @@ def clean_username(self):
        qs = User.objects.filter(username=username)
        if qs.exists():
            raise forms.ValidationError("This username alreagy exist. Choose another")
-
        return username
 
 def clean_email(self):
@@ -55,5 +61,13 @@ def clean_email(self):
        qs = User.objects.filter(email=email)
        if qs.exists():
            raise forms.ValidationError("This email alreagy exist. Choose another")
-
        return email
+
+def clean(self):
+       data = self.cleaned_data 
+       password = self.cleaned_data.get("password") 
+       password2 = self.cleaned_data.get("password2") 
+       if password != password2:
+           raise forms.ValidationError("The password and password 2 must be equals")
+       return data
+

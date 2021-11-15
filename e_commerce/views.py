@@ -36,40 +36,34 @@ def contact_page(request) :
 def login_page(request) :
     form = LoginForm(request.POST or None)
     context = {
-        'form':form
-    }
+                    'form':form
+              }
     print("User logged in")
-    #print(request.user.is_authenticated)
-
+    print(request.user.is_authenticated)
     if form.is_valid():
         print(form.cleaned_data)
-
-    username=form.cleaned_data.get("username")
-    password=form.cleaned_data.get("password")
-    user=authenticate(request, username=username, password=password)
-    print(user)
-    #print(request.user.is_authenticated)
-
-    if user is not None:
-        #print(request.user.is_authenticated)
-        login(request, user)
-        print("Valid login")
-
-        #Redirect to success page
-        return redirect("/")
-    else:
-        #Return an error message "Invalid Login"
-        print("Invalid login")
-
+        username=form.cleaned_data.get("username")
+        password=form.cleaned_data.get("password")
+        user=authenticate(request, username=username, password=password)
+        print(user)
+        print(request.user.is_authenticated)
+        if user is not None:
+            print(request.user.is_authenticated)
+            login(request, user)
+            print("Valid login")
+            #Redirect to main page
+            return redirect("/")
+        else:
+            #Return an error message "Invalid Login"
+            print("Invalid login")
     return render(request, "auth/login.html",context)
 
 User = get_user_model()
 def register_page(request) :
-    form = LoginForm(request.POST or None)
+    form = RegisterForm(request.POST or None)
     context = {
-        'form':form
-    }
-
+                    'form':form
+              }
     if form.is_valid():
         print(form.cleaned_data)
         username=form.cleaned_data.get("username")
@@ -77,4 +71,4 @@ def register_page(request) :
         password=form.cleaned_data.get("password")
         newuser = User.objects.create_user(username, email, password)
         print(newuser)
-    return render(request, "auth/register.html",{})
+    return render(request, "auth/register.html",context)
